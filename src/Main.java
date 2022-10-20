@@ -10,28 +10,47 @@ public class Main {
 
         String[] strHex = str.split("x");
         int len = strHex[1].length() / 2;
-        BigInteger hex1 = new BigInteger(strHex[1], 16);
 
-        StringBuilder strForLE = new StringBuilder();
-        strForLE.append(strHex[1]);
-        strForLE.reverse();
-        BigInteger hex2 = new BigInteger(String.valueOf(strForLE), 16);
+        BL_Endian hex1 = new BL_Endian(strHex[1]);
 
-        String strHex1 = String.format("0x%x", hex1);
+        StringBuilder revString = toRev(strHex[1]);
 
-        StringBuilder strForHex = new StringBuilder();
-        strForHex.append(hex2);
-        strForHex.reverse();
-        String strHex2 = String.format("0x%x", hex2);
-        int lenOfStrHex2 = strHex2.length() - 2;
+        BL_Endian hex2 = new BL_Endian(revString);
+
+        String dec1 = String.format("0x%x", hex1.getBLE());
+
+        String dec2 = String.format("0x%x", hex2.getBLE());
+        int lenOfStrHex2 = dec2.length() - 2;
         for(int i = 0; i < (len*2 - lenOfStrHex2); i++){
-            strHex2 += "0";
+            dec2 += "0";
         }
 
-        System.out.print("Value(BE to Hex): " + strHex1 +
-                "\nValue(LE to Hex): " + strHex2 +
+        System.out.print("Value(BE to Hex): " + dec1 +
+                "\nValue(LE to Hex): " + dec2 +
                 "\nNumber of bytes: " + len +
-                "\nLittle-Endian: " + hex2 +
-                "\nBig-Endian: " + hex1);
+                "\nLittle-Endian: " + hex2.getBLE() +
+                "\nBig-Endian: " + hex1.getBLE());
+    }
+
+    static StringBuilder toRev(String string){
+        StringBuilder revString = new StringBuilder();
+        revString.append(string);
+        revString.reverse();
+        return revString;
+    }
+}
+
+class BL_Endian{
+    private BigInteger BLE;
+    public BL_Endian(String hex) {
+        BLE = new BigInteger(hex, 16);
+    }
+
+    public BL_Endian(StringBuilder hex) {
+        BLE = new BigInteger(String.valueOf(hex), 16);
+    }
+
+    public BigInteger getBLE() {
+        return BLE;
     }
 }
